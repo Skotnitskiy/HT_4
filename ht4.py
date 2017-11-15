@@ -3,9 +3,10 @@ import re
 f_log = open("openerp-server.log", "r")
 lines = f_log.readlines()
 date_time_ptrn = "[0-9]+-\d\d-\d\d \d\d:\d\d:\d\d"
-errors_ptrn = "(ERROR)(.*)"
-warnings_ptrn = "(WARNING)(.*)"
-criticals_ptrn = "(CRITICAL)(.*)"
+markers_list = ["WARNING", "ERROR", "CRITICAL"]
+warnings_ptrn = "("+markers_list[0]+")(.*)"
+errors_ptrn = "("+markers_list[1]+")(.*)"
+criticals_ptrn = "("+markers_list[2]+")(.*)"
 
 def get_messages(type, pattern):
     result = {"Marker": type}
@@ -25,4 +26,4 @@ def get_messages(type, pattern):
     result.update({"Text":text_list})
     result.update({"LineId":lines_ids_list})
     return result
-print(get_messages("WARNING", warnings_ptrn))
+print(get_messages(markers_list[1], errors_ptrn))
