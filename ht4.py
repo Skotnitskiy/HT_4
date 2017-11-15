@@ -12,7 +12,10 @@ errors_ptrn = markers_list[1]+"(.*)"
 criticals_ptrn = markers_list[2]+"(.*)"
 patterns_list = [warnings_ptrn, errors_ptrn, criticals_ptrn]
 csv_all_da_columns = ["LineId", "Marker", "DateTime", "Description"]
-
+messages_dict = {}
+dtm_list = []
+t_list = []
+m_list = []
 def get_messages(type, pattern):
     result = []
     line_count = 0
@@ -25,6 +28,9 @@ def get_messages(type, pattern):
             result.append({csv_all_da_columns[1]: type})
             result.append({csv_all_da_columns[2]: l_date.group().strip()})
             result.append({csv_all_da_columns[3]: l_mess.group().split(type)[1].strip()})
+            m_list.append(type)
+            dtm_list.append(l_date.group().strip())
+            t_list.append(l_mess.group().split(type)[1].strip())
     return result
 
 def write_dict_to_CSV(csv_file,csv_columns,dict_data):
@@ -41,3 +47,23 @@ for marker, pattern in zip(markers_list, patterns_list):
 #write to file all data
 for message in messages_list:
     write_dict_to_CSV(all_data_csv_path, csv_all_da_columns, message)
+
+unique_descriptions = []
+warn_count = 0
+err_count = 0
+crit_count = 0
+i = 0
+for marker, date_time, description in zip(m_list, dtm_list, t_list):
+    if description not in unique_descriptions:
+        unique_descriptions.append(description)
+        if marker == "WARNING":
+            warn_count += 1
+        elif marker == "ERROR":
+            err_count += 1
+        elif marker == "CRITICAL":
+            crit_count += 1
+    i += 1
+print(unique_descriptions)
+print("Unique:", len(unique_descriptions), "warnings:", warn_count, "errors:", err_count, "criticals:", crit_count)
+print("All data:", i)
+    # write_dict_to_CSV(all_data_csv_path, csv_all_da_columns, message)
