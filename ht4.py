@@ -34,4 +34,18 @@ def get_warnings():
     warn_dict.update({"DateTime":dt_tm_list})
     warn_dict.update({"Text":text_list})
     return warn_dict
-print(get_warnings())
+
+def get_criticals():
+    critical_dict = {"Marker": "CRITICAL"}
+    dt_tm_list = []
+    text_list = []
+    for line in lines:
+        l_crit = re.search(criticals_ptrn, line)
+        l_date = re.search(date_time_ptrn, line)
+        if l_crit is not None:
+            dt_tm_list.append(l_date.group())
+            text_list.append(l_crit.group().split("CRITICAL")[1])
+    critical_dict.update({"DateTime":dt_tm_list})
+    critical_dict.update({"Text":text_list})
+    return critical_dict
+print(get_criticals())
