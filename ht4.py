@@ -7,6 +7,7 @@ markers_list = ["WARNING", "ERROR", "CRITICAL"]
 warnings_ptrn = "("+markers_list[0]+")(.*)"
 errors_ptrn = "("+markers_list[1]+")(.*)"
 criticals_ptrn = "("+markers_list[2]+")(.*)"
+patterns_list = [warnings_ptrn, errors_ptrn, criticals_ptrn]
 
 def get_messages(type, pattern):
     result = {"Marker": type}
@@ -26,4 +27,6 @@ def get_messages(type, pattern):
     result.update({"Text":text_list})
     result.update({"LineId":lines_ids_list})
     return result
-print(get_messages(markers_list[1], errors_ptrn))
+
+for marker, pattern in zip(markers_list, patterns_list):
+    print(get_messages(marker, pattern))
